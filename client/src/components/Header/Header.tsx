@@ -3,6 +3,9 @@ import {
   Users,
   Terminal,
   ExternalLink,
+  Share2,
+  ArrowLeft,
+  Bot,
 } from 'lucide-react';
 import type { UserProfile, ConnectionStatus } from '../../types/index.js';
 import { ChaosToggle } from './ChaosToggle.js';
@@ -20,6 +23,9 @@ interface HeaderProps {
   onOpenJudgesConsole: () => void;
   docTitle: string;
   onUpdateDocTitle: (title: string) => void;
+  onOpenInvite?: () => void;
+  onNavigateDashboard?: () => void;
+  onOpenAiTeammate?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -32,6 +38,9 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenJudgesConsole,
   docTitle,
   onUpdateDocTitle,
+  onOpenInvite,
+  onNavigateDashboard,
+  onOpenAiTeammate,
 }) => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -66,7 +75,11 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="app-header">
       {/* Left: Brand & Document Title */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div
+          style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: onNavigateDashboard ? 'pointer' : 'default' }}
+          onClick={onNavigateDashboard}
+          title={onNavigateDashboard ? "Back to Dashboard" : undefined}
+        >
           {/* Mini Animated Knit Cat Icon */}
           <div
             style={{
@@ -105,8 +118,9 @@ export const Header: React.FC<HeaderProps> = ({
             >
               Knit
             </div>
-            <div style={{ fontSize: '0.68rem', color: '#94a3b8', fontWeight: 500, letterSpacing: '0.02em' }}>
-              Real-Time CRDT Weaving
+            <div style={{ fontSize: '0.68rem', color: '#94a3b8', fontWeight: 500, letterSpacing: '0.02em', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              {onNavigateDashboard && <ArrowLeft size={10} />}
+              <span>{onNavigateDashboard ? 'Dashboard' : 'Real-Time CRDT'}</span>
             </div>
           </div>
         </div>
@@ -193,6 +207,48 @@ export const Header: React.FC<HeaderProps> = ({
           <ExternalLink size={14} />
           <span>Open Peer</span>
         </button>
+
+        {/* Collaboration Share / Invite Button */}
+        {onOpenInvite && (
+          <button
+            type="button"
+            onClick={onOpenInvite}
+            className="btn-ghost"
+            style={{
+              fontSize: '0.8rem',
+              padding: '6px 12px',
+              border: '1px solid rgba(236, 72, 153, 0.45)',
+              color: '#f472b6',
+              borderRadius: '8px',
+              background: 'rgba(236, 72, 153, 0.1)',
+            }}
+            title="Share Document & Invite Collaborators"
+          >
+            <Share2 size={14} color="#ec4899" />
+            <span>Share</span>
+          </button>
+        )}
+
+        {/* AI Teammate Modal Trigger */}
+        {onOpenAiTeammate && (
+          <button
+            type="button"
+            onClick={onOpenAiTeammate}
+            className="btn-ghost"
+            style={{
+              fontSize: '0.8rem',
+              padding: '6px 12px',
+              border: '1px solid rgba(6, 182, 212, 0.45)',
+              color: '#67e8f9',
+              borderRadius: '8px',
+              background: 'rgba(6, 182, 212, 0.1)',
+            }}
+            title="Summon AI Teammate to Live Type into Document"
+          >
+            <Bot size={14} color="#06b6d4" />
+            <span>AI Teammate</span>
+          </button>
+        )}
 
         {/* Judge's Console Trigger */}
         <button
